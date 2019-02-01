@@ -1,0 +1,115 @@
+<%
+@comunas = [
+    {
+      id: "laflorida",
+      name: "La florida",
+      price: "20000",
+      currency: "CLP",
+      interval: "month",
+      interval_count: 1,
+      trial_period_days: 0,
+      status: "active"
+    },
+    {
+      id: "santiago",
+      name: "Santiago",
+      price: "15000",
+      currency: "CLP",
+      interval: "month",
+      interval_count: 1,
+      trial_period_days: 0,
+      status: "active"
+    },
+    {
+      id: "providencia",
+      name: "Providencia",
+      price: "15000",
+      currency: "CLP",
+      interval: "month",
+      interval_count: 1,
+      trial_period_days: 0,
+      status: "active"
+    },
+    {
+      id: "lascondes",
+      name: "Las condes",
+      price: "15000",
+      currency: "CLP",
+      interval: "month",
+      interval_count: 1,
+      trial_period_days: 0,
+      status: "active"
+    }
+  ]
+
+  @total = 0
+%>
+<style>
+.f_left{
+    float:left;
+}
+</style>
+
+<p id="notice"><%= notice %></p>
+
+
+
+<div class="container mt-2">
+  <h1 class="mt-5">Destaca tus servicios</h1>
+<section>
+  <table class="table bg-white">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+        <form action="<%= order_order_path %>" method = 'get' class="form-inline row">
+            <% @comunas.each do |service| %>
+                <tr>
+                    <td class="text-center"><%= service[:name] %></td>
+                    <td class="text-center">Valor: <%= service[:price] %> <%= service[:currency] %></td>
+                    <td class="text-center"><%= check_box_tag 'comunas[]',  service[:id]  %></td>
+                </tr>
+            <% end %>
+
+            <%= submit_tag 'enviar', class: 'f-left' %>
+        </form>
+
+        <% if params[:comunas] %>
+            <% @comunas.each  do |c| %>
+                <% params[:comunas].each do |co| %>
+                    <% if co == c[:id]  %>
+                        <%= c[:name] %>
+                        <%= c[:price] %>
+                        <% @total +=  c[:price].to_i %>
+                    <% end %>
+                <% end %>
+            <% end %>
+
+            <h3> Total: <%=  @total %> </h3> 
+            <% if params[:comunas]  %>
+                <form action="<%= order_init_url %>"  method="POST" >
+                    <input class="form-control mr-sm-1 col-6" name="name"  type="text" placeholder="Busca proveedores o compradores por rut o nombre " aria-label="Search" value="<%= params[:comunas].length  %><%= params[:comunas].join  %>">
+                    <input class="form-control mr-sm-1 col-6" name="id"  type="text" placeholder="Busca proveedores o compradores por rut o nombre " aria-label="Search" value="<%= params[:comunas].length  %><%= params[:comunas].join  %>">
+                    <input class="form-control mr-sm-1 col-6" name="price"  type="text" placeholder="Total" aria-label="Search" value="<%=  @total %>">
+                    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>    
+                    <%= submit_tag 'enviar', class: 'f-left' %>
+                </form> 
+            <% end %>
+        </tbody>
+   <% end %>
+  </table>
+    <% @response.each do |r| %>
+        <br>
+        <p>id:    <%= r[:id] %></p>
+        <p>name:  <%= r[:name] %></p>
+        <p>price: <%= r[:price] %></p>
+        <p>subscriptions: <%= r[:subscriptions] %></p>
+    <% end %>
+</div>
+</section>
+
+
